@@ -1,5 +1,5 @@
-# Portainer Pull Image Restart Action
-This action pull an image of a docker container and restarts it.
+# Portainer Pull Image Recreate Action - Alpha release
+This action will pull the latest docker image and then recreate the container
 
 ## Inputs
 
@@ -23,17 +23,10 @@ This action pull an image of a docker container and restarts it.
 
 **Optional** Only required if you are using a private registry `eyJyZWdpc3RyeUlkIjoxfQ==`
 
-
-## Outputs
-
-### `time`
-
-The time we greeted you.
-
 ## Example usage
 
 ```yaml
-uses: actions/actions/portainer-pull-image-restart-action@v1
+uses: actions/portainer-pull-image-restart-action@v1
 with:
   portainer-url: 'https://portainer.domain.com'
   portainer-api-key: 'ptr_dQeZ7ljSgcEJ7tQPt+H7d59sNpujkKpD3J/2tGzghGE='

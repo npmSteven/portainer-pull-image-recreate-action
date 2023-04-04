@@ -1,6 +1,6 @@
 const { default: axios } = require('axios');
 
-const { buildContainerUrl, buildContainerStopUrl, buildContainerRenameUrl, buildContainerCreateUrl, buildNetworkConnectUrl, buildContainerStartUrl, buildResourceControlsUrl, buildContainerDeleteUrl } = require('./urls');
+const { buildContainerUrl, buildContainerStopUrl, buildContainerRenameUrl, buildContainerCreateUrl, buildNetworkConnectUrl, buildContainerStartUrl, buildResourceControlsUrl, buildContainerDeleteUrl, buildImagePullUrl } = require('./urls');
 
 const getContainerAPI = async ({
   portainerUrl,
@@ -180,6 +180,32 @@ const deleteContainerAPI = async ({
   }
 }
 
+const pullImageAPI = async ({
+  portainerUrl,
+  portainerEndpointId,
+  portainerApiKey,
+  portainerRegistryAuth,
+  image,
+}) => {
+  try {
+    const headers = {
+      'X-API-Key': portainerApiKey,
+    }
+    if (portainerRegistryAuth) {
+      headers['X-Registry-Auth'] = portainerRegistryAuth;
+    }
+    const response = await axios({
+      method: 'POST',
+      url: buildImagePullUrl(portainerUrl, portainerEndpointId, image),
+      headers,
+    });
+    return response;
+  } catch (error) {
+    console.error('ERROR - pullImageAPI():', error);
+    throw error;
+  }
+}
+
 module.exports = {
   getContainerAPI,
   stopContainerAPI,
@@ -189,4 +215,5 @@ module.exports = {
   connectContainerToNetworkAPI,
   updateResouceControlsAPI,
   deleteContainerAPI,
+  pullImageAPI,
 };

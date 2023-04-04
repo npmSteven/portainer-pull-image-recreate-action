@@ -31,6 +31,10 @@ const buildContainerDeleteUrl = (portainerUrl, portainerEndpointId, portainerCon
   return `${portainerUrl}/api/endpoints/${portainerEndpointId}/docker/containers/${portainerContainerId}?v=1&force=true`;
 }
 
+const buildImagePullUrl = (portainerUrl, portainerEndpointId, image) => {
+  return `${portainerUrl}/api/endpoints/${portainerEndpointId}/docker/images/create?fromImage=${image}`;
+}
+
 module.exports = {
   buildContainerUrl,
   buildContainerStopUrl,
@@ -40,4 +44,5 @@ module.exports = {
   buildNetworkConnectUrl,
   buildResourceControlsUrl,
   buildContainerDeleteUrl,
+  buildImagePullUrl,
 };

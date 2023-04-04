@@ -1,6 +1,5 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
-const { getContainerAPI, stopContainerAPI, renameContainerAPI, createContainerAPI, connectContainerToNetworkAPI, startContainerAPI, updateResouceControlsAPI, deleteContainerAPI } = require('./api');
+const { getContainerAPI, stopContainerAPI, renameContainerAPI, createContainerAPI, connectContainerToNetworkAPI, startContainerAPI, updateResouceControlsAPI, deleteContainerAPI, pullImageAPI } = require('./api');
 
 const getContainerToCreateNewContainer = (container, name) => {
   return {
@@ -15,12 +14,12 @@ const getContainerToCreateNewContainer = (container, name) => {
 
 (async () => {
   try {
-    const portainerUrl = core.getInput('portainer-url') || 'https://portainer.renaissancedigital.co.uk';
-    const portainerEndpointId = core.getInput('portainer-endpoint-id') || 2;
-    const portainerApiKey = core.getInput('portainer-api-key') || 'ptr_bQeZ9ljSgCEJ7tQPt+H7d59sNpujFKpD3J/2tGzgHGE=';
-    const portainerContainerName = core.getInput('portainer-container-name') || 'renaissancedigital.co.uk';
-    const portainerRegistryAuth = core.getInput('portainer-registry-auth') || 'eyJyZWdpc3RyeUlkIjoxfQ==';
-    
+    const portainerUrl = core.getInput('portainer-url');
+    const portainerEndpointId = core.getInput('portainer-endpoint-id');
+    const portainerApiKey = core.getInput('portainer-api-key');
+    const portainerContainerName = core.getInput('portainer-container-name');
+    const portainerRegistryAuth = core.getInput('portainer-registry-auth');
+
     // Check if all the required inputs are valid
     const urlRegex = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/);
     if (!portainerUrl || !urlRegex.test(portainerUrl)) {
@@ -49,9 +48,18 @@ const getContainerToCreateNewContainer = (container, name) => {
       portainerApiKey,
     });
     const portainerContainerId = containerResponse.data.Id;
+    // [Step 2] Pulling image
+    console.log('[Step 2] Pulling latest image');
+    await pullImageAPI({
+      portainerUrl,
+      portainerEndpointId,
+      portainerApiKey,
+      portainerRegistryAuth,
+      image: containerResponse.data.Config.Image,
+    })
 
-    // [Step 2] Stop the current container
-    console.log('[Step 2] Stop the current container');
+    // [Step 3] Stop the current container
+    console.log('[Step 3] Stop the current container');
     await stopContainerAPI({
       portainerUrl,
       portainerEndpointId,
@@ -59,8 +67,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       portainerContainerId,
     })
 
-    // [Step 3] Rename the current container
-    console.log('[Step 3] Rename the current container');
+    // [Step 4] Rename the current container
+    console.log('[Step 4] Rename the current container');
     await renameContainerAPI({
       portainerUrl,
       portainerEndpointId,
@@ -69,8 +77,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       name: `${portainerContainerName}-old`,
     });
 
-    // [Step 4] Create a new container
-    console.log('[Step 4] Create a new container');
+    // [Step 5] Create a new container
+    console.log('[Step 5] Create a new container');
     const newContainerConfig = getContainerToCreateNewContainer(containerResponse.data, portainerContainerName);
     const newContainer = await createContainerAPI({
       portainerUrl,
@@ -80,8 +88,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       oldConfig: newContainerConfig,
     });
 
-    // [Step 5] Connect to networks
-    console.log('[Step 5] Connect to networks');
+    // [Step 6] Connect to networks
+    console.log('[Step 6] Connect to networks');
     await Promise.all(
       Object.keys(containerResponse.data.NetworkSettings.Networks)
         .map(async (networkName) => {
@@ -96,8 +104,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       )
     )
 
-    // [Step 6] Start the new container
-    console.log('[Step 6] Start the new container');
+    // [Step 7] Start the new container
+    console.log('[Step 7] Start the new container');
     await startContainerAPI({
       portainerUrl,
       portainerEndpointId,
@@ -105,8 +113,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       portainerContainerId: newContainer.data.Id,
     });
 
-    // [Step 7] Update the resource controller
-    console.log('[Step 7] Update the resource controller');
+    // [Step 8] Update the resource controller
+    console.log('[Step 8] Update the resource controller');
     const { ResourceControl } = containerResponse.data.Portainer;
     await updateResouceControlsAPI({
       portainerUrl,
@@ -120,8 +128,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       }
     });
 
-    // [Step 8] Delete the current container
-    console.log('[Step 8] Delete the current container');
+    // [Step 9] Delete the current container
+    console.log('[Step 9] Delete the current container');
     await deleteContainerAPI({
       portainerUrl,
       portainerEndpointId,
