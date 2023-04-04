@@ -26,7 +26,7 @@ This action will pull the latest docker image and then recreate the container
 ## Example usage
 
 ```yaml
-uses: actions/portainer-pull-image-restart-action@v1
+uses: actions/portainer-pull-image-restart-action@v1.1
 with:
   portainer-url: 'https://portainer.domain.com'
   portainer-api-key: 'ptr_dQeZ7ljSgcEJ7tQPt+H7d59sNpujkKpD3J/2tGzghGE='
