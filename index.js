@@ -26,8 +26,8 @@ const getContainerToCreateNewContainer = (container, name) => {
       core.setFailed('portainer-url is required');
       return;
     }
-    if (typeof portainerEndpointId !== 'number') {
-      core.setFailed('portainer-endpoint-id is required and must be a number');
+    if (portainerApiKey.length === 0) {
+      core.setFailed('portainer-endpoint-id is required');
       return;
     }
     if (!portainerApiKey || portainerApiKey.trim().length === 0) {
