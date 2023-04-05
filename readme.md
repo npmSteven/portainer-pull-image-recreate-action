@@ -32,7 +32,7 @@ For now the action serves the purpose of what I created it for, but if you see a
 ## Example usage
 
 ```yaml
-uses: actions/portainer-pull-image-restart-action@v1.2
+uses: actions/portainer-pull-image-restart-action@v1.3
 with:
   portainer-url: 'https://portainer.domain.com'
   portainer-api-key: 'ptr_dQeZ7ljSgcEJ7tQPt+H7d59sNpujkKpD3J/2tGzghGE='
