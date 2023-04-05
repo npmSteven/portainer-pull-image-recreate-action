@@ -1,6 +1,12 @@
 # Portainer Pull Image Recreate Action - Alpha release
 This action will pull the latest docker image and then recreate the container
 
+## Considerations
+1. The state of this project is in Alpha, as I have only tested it against my own deployments, I feel maybe on a more complex portainer it may have some issues related to resource control.
+2. This action will recreate a container with portainer because of this you shouldn't run more than 1 action of this at once that is calling the same inputs: `portainer-url`, `portainer-endpint-id` and `portainer-container-name`. 
+
+For now the action serves the purpose of what I created it for, but if you see any issues using this action with your setup do let me know and I'll try and fix it for you.
+
 ## Inputs
 
 ### `portainer-url`
