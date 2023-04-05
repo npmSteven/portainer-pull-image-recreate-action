@@ -7,18 +7,18 @@ const getContainerToCreateNewContainer = (container, name) => {
     HostConfig: container.HostConfig,
     name,
     NetworkingConfig: {
-      EndpointsConfig: {},
+      EndpointsConfig: container?.NetworkSettings?.Networks || {},
     },
   };
 }
 
 (async () => {
   try {
-    const portainerUrl = core.getInput('portainer-url');
-    const portainerEndpointId = core.getInput('portainer-endpoint-id');
-    const portainerApiKey = core.getInput('portainer-api-key');
-    const portainerContainerName = core.getInput('portainer-container-name');
-    const portainerRegistryAuth = core.getInput('portainer-registry-auth');
+    const portainerUrl = core.getInput('portainer-url') || 'https://portainer.renaissancedigital.co.uk';
+    const portainerEndpointId = core.getInput('portainer-endpoint-id') || '2';
+    const portainerApiKey = core.getInput('portainer-api-key') || 'ptr_knu3NcY/uS/e8DnrMdItMXVwUogXRAKjHcKF8/uWGl8=';
+    const portainerContainerName = core.getInput('portainer-container-name') || 'renaissancedigital.co.uk';
+    const portainerRegistryAuth = core.getInput('portainer-registry-auth') || 'eyJyZWdpc3RyeUlkIjoxfQ==';
 
     // Check if all the required inputs are valid
     const urlRegex = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/);
